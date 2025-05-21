@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Raspberry Pi Chatbot Setup Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --primary: #1e40af;
+        --secondary: #3b82f6;
+        --accent: #10b981;
+        --text: #1f2937;
+        --bg: #d3d3d3;
+        --code-bg: #f1f5f9;
+        --border: #e2e8f0;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        line-height: 1.7;
+        color: var(--text);
+        background-color: var(--bg);
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: #eeee;
+        border-radius: 12px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin: 2rem 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--secondary);
+      }
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text);
+        margin: 1.5rem 0 0.75rem;
+      }
+
+      p {
+        margin-bottom: 1rem;
+        font-size: 1rem;
+      }
+
+      ul {
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+      }
+
+      a {
+        color: var(--secondary);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      a:hover {
+        color: var(--primary);
+      }
+
+      code {
+        background: var(--code-bg);
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.9rem;
+      }
+
+      pre {
+        background: var(--code-bg);
+        padding: 1rem;
+        border-radius: 8px;
+        position: relative;
+        overflow-x: auto;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin: 1rem 0;
+      }
+
+      .copy-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: var(--secondary);
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: background 0.2s;
+      }
+
+      .copy-btn:hover {
+        background: var(--primary);
+      }
+
+      .copy-btn.copied {
+        background: var(--accent);
+      }
+
+      .step {
+        margin-bottom: 2rem;
+      }
+
+      .note {
+        background: #e0f2fe;
+        border-left: 4px solid var(--secondary);
+        padding: 1rem;
+        border-radius: 6px;
+        margin: 1rem 0;
+      }
+
+      .warning {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem;
+        border-radius: 6px;
+        margin: 1rem 0;
+      }
+
+      .nav {
+        position: sticky;
+        top: 1rem;
+        background: #eee;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+      }
+
+      .nav ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .nav a {
+        font-size: 0.9rem;
+        color: var(--secondary);
+        padding: 0.5rem;
+        border-radius: 4px;
+      }
+
+      .nav a:hover {
+        background: var(--code-bg);
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 1rem;
+        }
+        .container {
+          padding: 1.5rem;
+        }
+        h1 {
+          font-size: 2rem;
+        }
+        h2 {
+          font-size: 1.5rem;
+        }
+        h3 {
+          font-size: 1.1rem;
+        }
+        .nav ul {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+<p>This guide provides a comprehensive step-by-step process to set up a chatbot on a Raspberry Pi. It includes prerequisites, environment preparation, installation of necessary software like ngrok, and configuration of services to automate the chatbot and ngrok URL notification setup.</p>
+
+  <body>
+    <div class="container">
+      <h1>Raspberry Pi Chatbot Setup Guide</h1>
+      <nav class="nav">
+        <ul>
+          <li><a href="#prerequisites">Prerequisites</a></li>
+          <li><a href="#step1">Step 1: Prepare Environment</a></li>
+          <li><a href="#step2">Step 2: Install ngrok</a></li>
+          <li><a href="#step3">Step 3: Chatbot Service</a></li>
+          <li><a href="#step4">Step 4: ngrok Service</a></li>
+          <li><a href="#step5">Step 5: Email Notification</a></li>
+          <li><a href="#step6">Step 6: Test Setup</a></li>
+          <li><a href="#step7">Step 7: Automation Script</a></li>
+        </ul>
+      </nav>
+      <p>
+        This guide walks you through setting up a Raspberry Pi 3 to run a Python
+        script (<code>chatbot.py</code>) on boot, forward port 5000 using ngrok,
+        and send the ngrok URL to your email automatically. Follow these steps to
+        configure your system efficiently.
+      </p>
+
+      <h2 id="prerequisites">Prerequisites</h2>
+      <ul>
+        <li>Raspberry Pi 3 with Raspberry Pi OS (Debian-based).</li>
+        <li>Stable internet connection on the Raspberry Pi.</li>
+        <li>A Gmail account for sending emails (or another SMTP server).</li>
+        <li>An ngrok account (free tier) with an authtoken from <a href="https://ngrok.com">ngrok.com</a>.</li>
+        <li><code>chatbot.py</code> in <code>/home/pi/</code>, listening on port 5000 (e.g., a Flask app).</li>
+      </ul>
+
+      <h2 id="step1">Step 1: Prepare Your Environment</h2>
+      <div class="step">
+        <h3>1.1 Update the System</h3>
+        <p>Keep your Raspberry Pi up-to-date:</p>
+        <pre><code>sudo apt update && sudo apt upgrade -y</code><button class="copy-btn">Copy</button></pre>
+      </div>
+      <div class="step">
+        <h3>1.2 Verify Python and pip</h3>
+        <p>Confirm Python 3 and pip are installed:</p>
+        <pre><code>python3 --version
+pip3 --version</code><button class="copy-btn">Copy</button></pre>
+        <p>If pip is missing, install it:</p>
+        <pre><code>sudo apt install python3-pip -y</code><button class="copy-btn">Copy</button></pre>
+      </div>
+      <div class="step">
+        <h3>1.3 Prepare <code>chatbot.py</code></h3>
+        <p>Ensure <code>chatbot.py</code> is in <code>/home/pi/</code> and listens on port 5000. Example Flask app:</p>
+        <pre><code>from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'Hello from Chatbot!'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)</code><button class="copy-btn">Copy</button></pre>
+        <p>Install dependencies (e.g., Flask):</p>
+        <pre><code>pip3 install flask</code><button class="copy-btn">Copy</button></pre>
+        <p>Test the script:</p>
+        <pre><code>python3 /home/pi/chatbot.py</code><button class="copy-btn">Copy</button></pre>
+        <p>Access <code>http://<raspberry_pi_ip>:5000</code> in a browser. Stop with <code>Ctrl+C</code>.</p>
+      </div>
+
+      <h2 id="step2">Step 2: Install and Configure ngrok</h2>
+      <div class="step">
+        <h3>2.1 Install ngrok</h3>
+        <p>Download and install ngrok for ARM:</p>
+        <pre><code>cd ~
+wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip
+unzip ngrok-stable-linux-arm.zip
+sudo mv ngrok /usr/local/bin/</code><button class="copy-btn">Copy</button></pre>
+      </div>
+      <div class="step">
+        <h3>2.2 Authenticate ngrok</h3>
+        <p>Sign up at <a href="https://ngrok.com">ngrok.com</a> and get your authtoken. Configure it:</p>
+        <pre><code>ngrok authtoken <your_authtoken></code><button class="copy-btn">Copy</button></pre>
+        <p>Replace <code><your_authtoken></code> with your ngrok authtoken.</p>
+      </div>
+      <div class="step">
+        <h3>2.3 Test ngrok</h3>
+        <p>Run <code>chatbot.py</code> in one terminal:</p>
+        <pre><code>python3 /home/pi/chatbot.py</code><button class="copy-btn">Copy</button></pre>
+        <p>In another terminal, start ngrok:</p>
+        <pre><code>ngrok http 5000</code><button class="copy-btn">Copy</button></pre>
+        <p>Note the public URL (e.g., <code>https://<random>.ngrok-free.app</code>) and test it in a browser. Stop both with <code>Ctrl+C</code>.</p>
+      </div>
+
+      <h2 id="step3">Step 3: Set Up Systemd Service for <code>chatbot.py</code></h2>
+      <div class="step">
+        <h3>3.1 Create Service File</h3>
+        <p>Create a systemd service file:</p>
+        <pre><code>sudo nano /etc/systemd/system/chatbot.service</code><button class="copy-btn">Copy</button></pre>
+        <p>Add:</p>
+        <pre><code>[Unit]
+Description=Chatbot Python Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/chatbot.py
+WorkingDirectory=/home/pi
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target</code><button class="copy-btn">Copy</button></pre>
+        <p>Save and exit (<code>Ctrl+O</code>, <code>Enter</code>, <code>Ctrl+X</code>).</p>
+      </div>
+      <div class="step">
+        <h3>3.2 Enable and Start Service</h3>
+        <p>Set permissions:</p>
+        <pre><code>sudo chmod 644 /etc/systemd/system/chatbot.service</code><button class="copy-btn">Copy</button></pre>
+        <p>Enable and start:</p>
+        <pre><code>sudo systemctl daemon-reload
+sudo systemctl enable chatbot
+sudo systemctl start chatbot</code><button class="copy-btn">Copy</button></pre>
+        <p>Check status:</p>
+        <pre><code>systemctl status chatbot</code><button class="copy-btn">Copy</button></pre>
+      </div>
+
+      <h2 id="step4">Step 4: Set Up Systemd Service for ngrok</h2>
+      <div class="step">
+        <h3>4.1 Create Service File</h3>
+        <p>Create:</p>
+        <pre><code>sudo nano /etc/systemd/system/ngrok.service</code><button class="copy-btn">Copy</button></pre>
+        <p>Add:</p>
+        <pre><code>[Unit]
+Description=Ngrok Service for Chatbot
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/ngrok http 5000 --log=stdout
+StandardOutput=journal
+StandardError=journal
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target</code><button class="copy-btn">Copy</button></pre>
+        <p>Save and exit.</p>
+      </div>
+      <div class="step">
+        <h3>4.2 Enable and Start Service</h3>
+        <p>Set permissions:</p>
+        <pre><code>sudo chmod 644 /etc/systemd/system/ngrok.service</code><button class="copy-btn">Copy</button></pre>
+        <p>Enable and start:</p>
+        <pre><code>sudo systemctl daemon-reload
+sudo systemctl enable ngrok
+sudo systemctl start ngrok</code><button class="copy-btn">Copy</button></pre>
+        <p>Check status:</p>
+        <pre><code>systemctl status ngrok</code><button class="copy-btn">Copy</button></pre>
+      </div>
+
+      <h2 id="step5">Step 5: Automate ngrok URL Email Notification</h2>
+      <div class="step">
+        <h3>5.1 Install Python Package</h3>
+        <p>Install <code>requests</code> for ngrok API:</p>
+        <pre><code>pip3 install requests</code><button class="copy-btn">Copy</button></pre>
+      </div>
+      <div class="step">
+        <h3>5.2 Create Notification Script</h3>
+        <p>Create:</p>
+        <pre><code>nano /home/pi/send_ngrok_url.py</code><button class="copy-btn">Copy</button></pre>
+        <p>Add:</p>
+        <pre><code>import requests
+import smtplib
+from email.mime.text import MIMEText
+import time
+
+# Email configuration
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+SENDER_EMAIL = "your_email@gmail.com"  # Replace with your email
+SENDER_PASSWORD = "your_app_password"  # Replace with your app-specific password
+RECIPIENT_EMAIL = "recipient_email@example.com"  # Replace with recipient email
+
+def get_ngrok_url():
+    time.sleep(10)  # Wait for ngrok to initialize
+    try:
+        response = requests.get("http://localhost:4040/api/tunnels")
+        data = response.json()
+        for tunnel in data["tunnels"]:
+            if tunnel["proto"] == "https":
+                return tunnel["public_url"]
+        return None
+    except Exception as e:
+        return f"Error fetching ngrok URL: {e}"
+
+def send_email(url):
+    msg = MIMEText(f"ngrok URL: {url}")
+    msg["Subject"] = "Raspberry Pi ngrok URL"
+    msg["From"] = SENDER_EMAIL
+    msg["To"] = RECIPIENT_EMAIL
+
+    try:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SENDER_EMAIL, SENDER_PASSWORD)
+            server.sendmail(SENDER_EMAIL, RECIPIENT_EMAIL, msg.as_string())
+        return "Email sent successfully"
+    except Exception as e:
+        return f"Error sending email: {e}"
+
+if __name__ == "__main__":
+    ngrok_url = get_ngrok_url()
+    if ngrok_url:
+        result = send_email(ngrok_url)
+        print(result)
+    else:
+        print("No ngrok URL found")</code><button class="copy-btn">Copy</button></pre>
+        <p>Replace <code>your_email@gmail.com</code>, <code>your_app_password</code>, and <code>recipient_email@example.com</code> with your Gmail address, app-specific password (from Google Account > Security > 2-Step Verification > App passwords), and recipient email.</p>
+        <p>Save and exit.</p>
+        <p>Set permissions:</p>
+        <pre><code>chmod +x /home/pi/send_ngrok_url.py</code><button class="copy-btn">Copy</button></pre>
+      </div>
+      <div class="step">
+        <h3>5.3 Create Notification Service</h3>
+        <p>Create:</p>
+        <pre><code>sudo nano /etc/systemd/system/ngrok-notify.service</code><button class="copy-btn">Copy</button></pre>
+        <p>Add:</p>
+        <pre><code>[Unit]
+Description=Send ngrok URL via Email
+After=ngrok.service
+Requires=ngrok.service
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/send_ngrok_url.py
+WorkingDirectory=/home/pi
+StandardOutput=journal
+StandardError=journal
+Restart=on-failure
+User=pi
+
+[Install]
+WantedBy=multi-user.target</code><button class="copy-btn">Copy</button></pre>
+        <p>Save and exit.</p>
+        <p>Set permissions:</p>
+        <pre><code>sudo chmod 644 /etc/systemd/system/ngrok-notify.service</code><button class="copy-btn">Copy</button></pre>
+        <p>Enable and start:</p>
+        <pre><code>sudo systemctl daemon-reload
+sudo systemctl enable ngrok-notify
+sudo systemctl start ngrok-notify</code><button class="copy-btn">Copy</button></pre>
+      </div>
+
+      <h2 id="step6">Step 6: Test the Setup</h2>
+      <div class="step">
+        <h3>6.1 Reboot and Verify</h3>
+        <p>Reboot:</p>
+        <pre><code>sudo reboot</code><button class="copy-btn">Copy</button></pre>
+        <p>Check services:</p>
+        <pre><code>systemctl status chatbot
+systemctl status ngrok
+systemctl status ngrok-notify</code><button class="copy-btn">Copy</button></pre>
+        <p>Check your email for the ngrok URL. Test it in a browser.</p>
+      </div>
+      <div class="step">
+        <h3>6.2 Troubleshoot</h3>
+        <p>View logs if issues occur:</p>
+        <pre><code>journalctl -u chatbot -b
+journalctl -u ngrok -b
+journalctl -u ngrok-notify -b</code><button class="copy-btn">Copy</button></pre>
+        <div class="note">
+          <p><strong>Note:</strong> If the email fails, ensure your Gmail app-specific password is correct. If the URL isn’t fetched, increase <code>time.sleep(10)</code> in <code>send_ngrok_url.py</code>.</p>
+        </div>
+      </div>
+
+      <h2 id="step7">Step 7: Automation Script</h2>
+      <p>Use this script to automate all steps:</p>
+      <pre><code>sudo nano /home/pi/setup_chatbot_ngrok_email.sh</code><button class="copy-btn">Copy</button></pre>
+      <p>Add the script from the next section, replace placeholders, and run:</p>
+      <pre><code>chmod +x /home/pi/setup_chatbot_ngrok_email.sh
+sudo /home/pi/setup_chatbot_ngrok_email.sh</code><button class="copy-btn">Copy</button></pre>
+
+      <div class="warning">
+        <p><strong>Warning:</strong> The free ngrok plan uses random URLs that change on restart. Secure <code>chatbot.py</code> with authentication, as the URL is public.</p>
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll('.copy-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const code = button.previousElementSibling.textContent;
+          navigator.clipboard.writeText(code).then(() => {
+            button.textContent = 'Copied!';
+            button.classList.add('copied');
+            setTimeout(() => {
+              button.textContent = 'Copy';
+              button.classList.remove('copied');
+            }, 2000);
+          }).catch(err => {
+            console.error('Failed to copy:', err);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
